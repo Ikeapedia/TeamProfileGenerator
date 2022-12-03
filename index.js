@@ -8,7 +8,6 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 
 const employeeArr = [];
-const jobs = ['Engineer', 'Intern'];
 
 
 const createManager = () => {
@@ -62,7 +61,7 @@ const createEmployee = () => {
             type: 'list',
             name: 'role',
             messages: "Select the employee's role",
-            choices: jobs
+            choices: ['Engineer', 'Intern']
         },
 
         {
@@ -96,7 +95,7 @@ const createEmployee = () => {
             type: 'input',
             name: 'github',
             message: "Enter the engineer's GitHub username.",
-            when: (input) => input.role === jobs[0],
+            when: (input) => input.role === "Engineer",
             validate: nameInput => {
                 return (nameInput ? true : console.log("Please enter the employee's GitHub username."));
             }
@@ -106,7 +105,7 @@ const createEmployee = () => {
             type: 'input',
             name: 'school',
             message: "Enter the intern's school.",
-            when: (input) => input.role === jobs[1],
+            when: (input) => input.role === "Intern",
             validate: nameInput => {
                 return (nameInput ? true : console.log("Please enter the intern's school."));
             }
@@ -116,16 +115,16 @@ const createEmployee = () => {
             type: 'confirm',
             name: 'confirmAddEmployee',
             message: 'Are there more employees you wish to add?',
-
         }
     ])
         .then(employeeInfo => {
-            let { name, id, email, github, school, confirmAddEmployee } = employeeInfo;
+            let { name, id, email, role, github, school, confirmAddEmployee } = employeeInfo;
             let employee;
 
             if (role === 'Engineer') {
                 employee = new Engineer(name, id, email, github);
                 console.log(employee);
+
             } else if (role === 'Intern') {
                 employee = new Intern(name, id, email, school);
                 console.log(employee);
@@ -138,18 +137,31 @@ const createEmployee = () => {
 };
 
 const writeFile = data => {
-    fs.writeFile('../dist/index.html', data, error => error ? console.log('There appears to be an issue ' + error) : console.log('No issues found, team profile created.'))
+    fs.writeFile('./dist/index.html', data, error => error ? console.log(error) : console.log('No issues found, team profile created.'))
 };
 
 createManager()
-    .then(createEmployee)
-    , then(employeeArr => {
+    .then(() => createEmployee())
+    .then((employeeArr) => {
         return generateHTML(employeeArr);
     })
-        .then(pageHTML => {
-            return writeFile(pageHTML);
-        })
-        .catch(error => {
-            console.log('There appears to be an error: ' + error);
-        });
+    .then((pageHTML) => {
+        return writeFile(pageHTML);
+    })
+    .catch((error) => {
+        console.log('There appears to be an error: ' + error);
+    });
+
+
+// createManager()
+//     .then(createEmployee)
+//     .then(employeeArr => {
+//         return generateHTML(employeeArr);
+//     })
+//         .then(pageHTML => {
+//             return writeFile(pageHTML);
+//         })
+//         .catch(error => {
+//             console.log('There appears to be an error: ' + error);
+//         });
 
