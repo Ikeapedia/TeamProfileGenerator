@@ -6,6 +6,7 @@ const Employee = require('./lib/Employee')
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
+const generateHTML = require('./src/generateHTML');
 
 const employeeArr = [];
 
@@ -38,16 +39,16 @@ const createManager = () => {
         },
         {
             type: 'input',
-            name: 'officeNum',
+            name: 'office',
             message: 'What is their office number?',
             validate: nameInput => {
-                return (nameInput ? true : console.log("Please enter the manager's office number."));
+                return (isNaN(nameInput) ? console.log("Please enter the manager's office number.") : true );
             }
         }
     ])
-        .then(createManager => {
-            const { name, id, email, officeNum } = createManager;
-            const manager = new Manager(name, id, email, officeNum);
+        .then(managerInfo => {
+            const { name, id, email, office } = managerInfo;
+            const manager = new Manager(name, id, email, office);
 
             employeeArr.push(manager);
             console.log(manager);
@@ -151,17 +152,4 @@ createManager()
     .catch((error) => {
         console.log('There appears to be an error: ' + error);
     });
-
-
-// createManager()
-//     .then(createEmployee)
-//     .then(employeeArr => {
-//         return generateHTML(employeeArr);
-//     })
-//         .then(pageHTML => {
-//             return writeFile(pageHTML);
-//         })
-//         .catch(error => {
-//             console.log('There appears to be an error: ' + error);
-//         });
 
